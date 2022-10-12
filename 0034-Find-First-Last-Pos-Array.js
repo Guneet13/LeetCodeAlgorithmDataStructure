@@ -17,7 +17,8 @@ Input: nums = [], target = 0
 Output: [-1,-1]
 */
 
-var searchRange = function(nums, target) {
+//Solution:1
+var searchRange1 = function(nums, target) {
     
   let result = [-1,-1];
   let j=0;
@@ -36,3 +37,66 @@ var searchRange = function(nums, target) {
   return result;
 };
 //Time complexity: O(n)
+
+//Solution:2
+var searchRange2 = function (nums, target) {
+  let targetFirstOccurrence = nums.indexOf(target);
+
+  if (targetFirstOccurrence === -1) return [-1, -1];
+
+  for (let i = targetFirstOccurrence; i < nums.length; i++) {
+      if (nums[i] > target) {
+          return [targetFirstOccurrence, i - 1];
+      }
+  }
+
+  return [targetFirstOccurrence, nums.length - 1];
+};
+//Time complexity: O(n(log n))
+
+//Solution:3
+
+var searchRange3 = function (nums, target) {
+  let left = 0;
+  let right = nums.length - 1;
+  let output = [-1, -1];
+
+  // Binary search for the target (left-biased)
+  while (left < right) {
+      let middle = Math.floor((left + right) / 2);
+
+      if (nums[middle] < target) {
+          left = middle + 1;
+      } else {
+          right = middle;
+      }
+  }
+
+  // If the target was not found on the first pass
+  if (nums[left] != target) {
+      return output;
+  }
+
+  // Store the left-hand side
+  output[0] = left;
+
+  // Reset the right-hand side of the binary search (left-hand side remains as is)
+  right = nums.length - 1;
+
+  // Binary search for the target (right-biased)
+  while (left < right) {
+      let middle = Math.floor((left + right) / 2) + 1;
+      if (nums[middle] <= target) {
+          left = middle;
+      } else {
+          right = middle - 1;
+      }
+  }
+
+  // Store the right-hand side
+  output[1] = right;
+
+  return output;
+};
+
+//Time complexity: O(log n)
